@@ -10,6 +10,7 @@ import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 
 import Route from './src/navigation/route';
+import COLORS from './src/constants/colors';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       <StatusBar
         translucent
         barStyle="dark-content"
-        backgroundColor={'#008CC0'}
+        backgroundColor={COLORS.primary}
       />
       <NavigationContainer>
         <Route />

@@ -1,6 +1,10 @@
 import {StyleSheet} from 'react-native';
+import COLORS from '../constants/colors';
 
 export const mainStyles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   mainContainer: {
     flex: 1,
     paddingHorizontal: 20,
@@ -11,17 +15,13 @@ export const mainStyles = StyleSheet.create({
     alignItems: 'center',
   },
   mainTitle: {
-    fontSize: 25,
-    color: '#074079',
-    textAlign: 'center',
+    color: COLORS.white,
+    fontSize: 50,
+    fontWeight: 800,
   },
-  secondTitle: {
-    fontSize: 20,
-    color: '#074079',
-    textAlign: 'center',
-  },
-  mainText: {
-    color: '#2D2D2D',
-    fontSize: 16,
+  mainStarted: {
+    color: COLORS.white,
+    fontSize: 46,
+    fontWeight: 800,
   },
 });
