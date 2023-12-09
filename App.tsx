@@ -5,14 +5,19 @@
  * @format
  */
 
-import React from 'react';
-import {StatusBar} from 'react-native';
+import React, {useEffect} from 'react';
+import {Platform, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-
+import SplashScreen from 'react-native-splash-screen';
 import Route from './src/navigation/route';
 import COLORS from './src/constants/colors';
 
 function App() {
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      SplashScreen.hide();
+    }
+  }, []);
   return (
     <>
       <StatusBar
