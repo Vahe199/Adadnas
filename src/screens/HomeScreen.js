@@ -1,11 +1,11 @@
 import React from 'react';
-import {mainStyles} from '../global-styles/global-styles';
+import { mainStyles } from '../global-styles/global-styles';
 import LinearGradient from 'react-native-linear-gradient';
 import COLORS from '../constants/colors';
-import {Image, Text, View} from 'react-native';
+import { Image, Text, View } from 'react-native';
 import Button from '../components/Button';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   return (
     <LinearGradient
       style={mainStyles.flex}
@@ -13,7 +13,7 @@ const HomeScreen = ({navigation}) => {
       <View style={[mainStyles.flex]}>
         <Image
           source={require('../assets/cropped-Adanas-logo.png')}
-          style={{marginTop: 40}}
+          style={{ marginTop: 40 }}
         />
         <View>
           <Image
@@ -25,9 +25,9 @@ const HomeScreen = ({navigation}) => {
               position: 'absolute',
               top: 10,
               transform: [
-                {translateX: 20},
-                {translateY: 50},
-                {rotate: '-15deg'},
+                { translateX: 20 },
+                { translateY: 50 },
+                { rotate: '-15deg' },
               ],
             }}
           />
@@ -41,9 +41,9 @@ const HomeScreen = ({navigation}) => {
               top: -30,
               left: 100,
               transform: [
-                {translateX: 50},
-                {translateY: 50},
-                {rotate: '-5deg'},
+                { translateX: 50 },
+                { translateY: 50 },
+                { rotate: '-5deg' },
               ],
             }}
           />
@@ -57,9 +57,9 @@ const HomeScreen = ({navigation}) => {
               top: 130,
               left: -50,
               transform: [
-                {translateX: 50},
-                {translateY: 50},
-                {rotate: '15deg'},
+                { translateX: 50 },
+                { translateY: 50 },
+                { rotate: '15deg' },
               ],
             }}
           />
@@ -73,9 +73,9 @@ const HomeScreen = ({navigation}) => {
               top: 110,
               left: 100,
               transform: [
-                {translateX: 50},
-                {translateY: 50},
-                {rotate: '-15deg'},
+                { translateX: 50 },
+                { translateY: 50 },
+                { rotate: '-15deg' },
               ],
             }}
           />
@@ -90,7 +90,7 @@ const HomeScreen = ({navigation}) => {
           }}>
           <Text style={[mainStyles.mainTitle]}>Let's Get</Text>
           <Text style={[mainStyles.mainStarted]}>Started</Text>
-          <View style={{marginVertical: 22}}>
+          <View style={{ marginVertical: 22 }}>
             <Text
               style={{
                 fontSize: 16,
