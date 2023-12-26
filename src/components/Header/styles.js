@@ -9,7 +9,7 @@ const Styles = theme => {
     container: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingTop: insets.top + normalize(6),
+      paddingTop: insets.top + normalize(12),
       paddingBottom: normalize(12),
       paddingHorizontal: normalize(16),
       backgroundColor: COLORS.primary,

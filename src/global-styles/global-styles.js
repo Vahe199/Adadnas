@@ -24,4 +24,17 @@ export const mainStyles = StyleSheet.create({
     fontSize: 46,
     fontWeight: 800,
   },
+  footer: {
+    padding: 5,
+    position: 'absolute',
+    bottom: 0,
+    alignItems: 'center',
+    width: '100%',
+  },
+  line: {
+    width: '100px',
+    height: '2px',
+    backgroundColor: '#262626',
+    marginVertical: 5,
+  },
 });

@@ -3,7 +3,8 @@ const COLORS = {
   black: '#222222',
   primary: '#007260',
   secondary: '#39b68d',
-  grey: '#cccccc',
+  secondaryLight: '#39B68D44',
+  grey: '#a4a3a3',
 };
 
 export default COLORS;

@@ -9,7 +9,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <LinearGradient
       style={mainStyles.flex}
-      colors={[COLORS.secondary, COLORS.primary]}>
+      colors={[COLORS.white, COLORS.primary]}>
       <View style={[mainStyles.flex]}>
         <Image
           source={require('../assets/cropped-Adanas-logo.png')}
@@ -85,7 +85,7 @@ const HomeScreen = ({ navigation }) => {
           style={{
             paddingHorizontal: 22,
             position: 'absolute',
-            top: 400,
+            top: 360,
             width: '100%',
           }}>
           <Text style={[mainStyles.mainTitle]}>Let's Get</Text>
@@ -97,14 +97,15 @@ const HomeScreen = ({ navigation }) => {
                 color: COLORS.white,
                 marginVertical: 4,
               }}>
-              Connect whit each with chatting
+              Be part of our community!
             </Text>
             <Text
               style={{
                 fontSize: 16,
                 color: COLORS.white,
               }}>
-              Calling, Enjoy Safe and Private texting
+              Join now to unlock exclusive offers and stay informed about our
+              latest products and updates.
             </Text>
           </View>
           <Button

@@ -3,9 +3,12 @@ import { Text, View } from 'react-native';
 import { Styles } from './styles';
 import { deviceInfo } from 'assets/deviceInfo';
 import { normalize } from 'global-styles/normalize';
+import COLORS from 'constants/colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Header = ({
   title = '',
+  logo,
   rightIcon = false,
   renderRightIcon,
   backButtonVisible = true,
@@ -15,8 +18,14 @@ const Header = ({
 }) => {
   const styles = Styles();
   return (
-    <View style={[styles.container, containerStyle]}>
-      {renderTitle ? (
+    <LinearGradient
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={[styles.container, containerStyle]}
+      colors={[COLORS.white, COLORS.secondary, COLORS.primary]}>
+      {logo ? (
+        logo
+      ) : renderTitle ? (
         renderTitle(title)
       ) : title ? (
         <View
@@ -35,7 +44,7 @@ const Header = ({
         </View>
       ) : null}
       {rightIcon && renderRightIcon()}
-    </View>
+    </LinearGradient>
   );
 };
 

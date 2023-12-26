@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
-import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import EyeIcon from '../components/SVGComponent/EyeIcon';
 import Button from '../components/Button';
 
-const LogInScreen = ({navigation}) => {
+const LogInScreen = ({ navigation }) => {
   const [showPass, setShowPass] = useState(false);
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
-      <View style={{flex: 1, marginHorizontal: 22}}>
-        <View style={{marginVertical: 22}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+      <View style={{ flex: 1, marginHorizontal: 22 }}>
+        <View style={{ marginVertical: 22 }}>
           <Image source={require('../assets/cropped-Adanas-logo.png')} />
           <Text
             style={{
@@ -19,14 +19,14 @@ const LogInScreen = ({navigation}) => {
               marginVertical: 12,
               color: COLORS.black,
             }}>
-            Go to Your Account
-          </Text>
-          <Text style={{fontSize: 16, color: COLORS.black}}>
             Get the news now!
           </Text>
+          <Text style={{ fontSize: 16, color: COLORS.black }}>
+            Please enter your details.
+          </Text>
         </View>
-        <View style={{marginBottom: 12}}>
-          <Text style={{fontSize: 16, fontWeight: 400, marginVertical: 8}}>
+        <View style={{ marginBottom: 12 }}>
+          <Text style={{ fontSize: 16, fontWeight: 400, marginVertical: 8 }}>
             Email address
           </Text>
           <View
@@ -44,12 +44,12 @@ const LogInScreen = ({navigation}) => {
               placeholder={'Enter your email address'}
               placeholderTextColor={COLORS.grey}
               keyboardType={'email-address'}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
             />
           </View>
         </View>
-        <View style={{marginBottom: 12}}>
-          <Text style={{fontSize: 16, fontWeight: 400, marginVertical: 8}}>
+        <View style={{ marginBottom: 12 }}>
+          <Text style={{ fontSize: 16, fontWeight: 400, marginVertical: 8 }}>
             Password
           </Text>
           <View
@@ -66,21 +66,26 @@ const LogInScreen = ({navigation}) => {
             <TextInput
               placeholder={'Enter your password'}
               placeholderTextColor={COLORS.grey}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               secureTextEntry={!showPass}
             />
             <TouchableOpacity
               onPress={() => setShowPass(!showPass)}
-              style={{position: 'absolute', right: 12, width: 24, height: 24}}>
+              style={{
+                position: 'absolute',
+                right: 12,
+                width: 24,
+                height: 24,
+              }}>
               <EyeIcon show={showPass} />
             </TouchableOpacity>
           </View>
         </View>
         <Button
-          title={'Log In'}
+          title={'Sign In'}
           onPress={() => navigation.navigate('Notification')}
           filled
-          style={{marginTop: 18, marginBottom: 4}}
+          style={{ marginTop: 18, marginBottom: 4 }}
         />
       </View>
     </SafeAreaView>
