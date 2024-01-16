@@ -4,9 +4,75 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import EyeIcon from '../components/SVGComponent/EyeIcon';
 import Button from '../components/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const LogInScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
+  const [errors, setErrors] = useState({});
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('my-key');
+      if (jsonValue) {
+        navigation.replace('Notification');
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+      return () => null;
+    }, []),
+  );
+  const handleCheckEmail = val => {
+    if (!val) {
+      setErrors({ ...errors, email: 'Email is required.' });
+    } else if (!/\S+@\S+\.\S+/.test(val)) {
+      setErrors({ ...errors, email: 'Email is invalid.' });
+    } else {
+      setErrors({ ...errors, email: '' });
+    }
+  };
+
+  const handleCheckPass = val => {
+    if (!val) {
+      setErrors({ ...errors, password: 'Password is required.' });
+    } else if (password.length < 6) {
+      setErrors({
+        ...errors,
+        password: 'Password must be at least 6 characters.',
+      });
+    } else {
+      setErrors({ ...errors, password: '' });
+    }
+  };
+
+  const logIn = async () => {
+    if (errors?.email || errors?.password) return;
+    if (!password) {
+      setErrors({ ...errors, password: 'Password is required.' });
+      return;
+    }
+
+    if (!email) {
+      setErrors({ ...errors, email: 'Email is required.' });
+      return;
+    }
+
+    try {
+      const jsonValue = JSON.stringify({ password, email });
+      await AsyncStorage.setItem('my-key', jsonValue);
+      navigation.navigate('Notification');
+    } catch (e) {
+      // saving error const
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -39,13 +105,29 @@ const LogInScreen = ({ navigation }) => {
               alignItems: 'center',
               justifyContent: 'center',
               paddingLeft: 22,
+              position: 'relative',
             }}>
             <TextInput
               placeholder={'Enter your email address'}
               placeholderTextColor={COLORS.grey}
               keyboardType={'email-address'}
               style={{ width: '100%' }}
+              value={email}
+              onChangeText={text => {
+                setEmail(text);
+                handleCheckEmail(text);
+              }}
             />
+            <Text
+              style={{
+                color: COLORS.red,
+                fontSize: 12,
+                position: 'absolute',
+                left: 0,
+                top: 50,
+              }}>
+              {errors?.email}
+            </Text>
           </View>
         </View>
         <View style={{ marginBottom: 12 }}>
@@ -68,6 +150,11 @@ const LogInScreen = ({ navigation }) => {
               placeholderTextColor={COLORS.grey}
               style={{ width: '100%' }}
               secureTextEntry={!showPass}
+              value={password}
+              onChangeText={text => {
+                setPassword(text);
+                handleCheckPass(text);
+              }}
             />
             <TouchableOpacity
               onPress={() => setShowPass(!showPass)}
@@ -79,11 +166,21 @@ const LogInScreen = ({ navigation }) => {
               }}>
               <EyeIcon show={showPass} />
             </TouchableOpacity>
+            <Text
+              style={{
+                color: COLORS.red,
+                fontSize: 12,
+                position: 'absolute',
+                left: 0,
+                top: 50,
+              }}>
+              {errors?.password}
+            </Text>
           </View>
         </View>
         <Button
           title={'Sign In'}
-          onPress={() => navigation.navigate('Notification')}
+          onPress={logIn}
           filled
           style={{ marginTop: 18, marginBottom: 4 }}
         />

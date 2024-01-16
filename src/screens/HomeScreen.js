@@ -4,8 +4,31 @@ import LinearGradient from 'react-native-linear-gradient';
 import COLORS from '../constants/colors';
 import { Image, Text, View } from 'react-native';
 import Button from '../components/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = ({ navigation }) => {
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('my-key');
+      if (jsonValue) {
+        navigation.replace('Notification');
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+      return () => null;
+    }, []),
+  );
+  const handleStarted = () => {
+    navigation.navigate('LogIn');
+  };
+
   return (
     <LinearGradient
       style={mainStyles.flex}
@@ -110,10 +133,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <Button
             title={'Join Now'}
-            onPress={() => {
-              console.log(666);
-              navigation.navigate('LogIn');
-            }}
+            onPress={handleStarted}
             style={{
               marginTop: 22,
               width: '100%',

@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Home, LogIn, Notification } from '../screens';
-import { useInitialRoute } from 'hooks/useInitialRoute';
 
 const Stack = createNativeStackNavigator();
 const Route = () => {
-  const route = useInitialRoute();
-  console.log(route, 'ROUTE');
   return (
     <Stack.Navigator
       screenOptions={{

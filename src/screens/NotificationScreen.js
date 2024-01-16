@@ -14,6 +14,7 @@ import { normalize } from 'global-styles/normalize';
 import * as Animatable from 'react-native-animatable';
 import COLORS from 'constants/colors';
 import { mainStyles } from 'global-styles/global-styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const mockData = [
   {
@@ -61,7 +62,7 @@ const mockData = [
 ];
 
 const unreadCount = 2;
-const NotificationScreen = () => {
+const NotificationScreen = ({ navigation }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const handlePress = url => {
     // Specify the URL you want to open
@@ -69,6 +70,16 @@ const NotificationScreen = () => {
     // Open the URL in the default browser
     Linking.openURL(url);
   };
+
+  const removeItem = async () => {
+    try {
+      await AsyncStorage.removeItem('my-key');
+      navigation.replace('Home');
+    } catch (e) {
+      // error reading value
+    }
+  };
+
   const renderNotifications = useCallback(({ item, index }) => {
     return (
       <Animatable.View
@@ -169,6 +180,19 @@ const NotificationScreen = () => {
           }}
         />
       ) : null}
+      {showNotifications ? (
+        ''
+      ) : (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={removeItem}
+          style={{ position: 'absolute', left: 10, bottom: 100 }}>
+          <Image
+            source={require('../assets/images/log-out.png')}
+            style={{ width: 30, height: 30 }}
+          />
+        </TouchableOpacity>
+      )}
       {showNotifications ? (
         ''
       ) : (
