@@ -15,6 +15,8 @@ import * as Animatable from 'react-native-animatable';
 import COLORS from 'constants/colors';
 import { mainStyles } from 'global-styles/global-styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LogOutIcon } from 'components/SVGComponent/Auth/LogOutIcon';
+import { useGetNotification } from 'hooks/useGetNotification.hook';
 
 const mockData = [
   {
@@ -71,6 +73,7 @@ const NotificationScreen = ({ navigation }) => {
     Linking.openURL(url);
   };
 
+  const { notificationList, isLoading, meta } = useGetNotification();
   const removeItem = async () => {
     try {
       await AsyncStorage.removeItem('my-key');
@@ -94,7 +97,9 @@ const NotificationScreen = ({ navigation }) => {
             padding: normalize(16),
           }}>
           <Image
-            source={item?.img}
+            source={{
+              uri: item?.img,
+            }}
             style={{
               height: 40,
               width: 40,
@@ -110,7 +115,7 @@ const NotificationScreen = ({ navigation }) => {
                 fontSize: 14,
                 lineHeight: 20,
               }}>
-              {item?.title || ''}
+              {item?.message || ''}
             </Text>
             <Text
               style={{
@@ -120,7 +125,7 @@ const NotificationScreen = ({ navigation }) => {
                 marginTop: 5,
                 color: COLORS.grey,
               }}>
-              {item?.description || ''}
+              {item?.title || ''}
             </Text>
           </View>
           {item?.unread && (
@@ -134,7 +139,7 @@ const NotificationScreen = ({ navigation }) => {
             />
           )}
         </TouchableOpacity>
-        {mockData?.[index + 1] ? <Underline /> : null}
+        {notificationList?.[index + 1] ? <Underline /> : null}
       </Animatable.View>
     );
   }, []);
@@ -147,52 +152,55 @@ const NotificationScreen = ({ navigation }) => {
         rightIcon
         renderRightIcon={() => {
           return (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => setShowNotifications(!showNotifications)}>
-              <NotificationIcon />
-              <View
+            <>
+              <TouchableOpacity
+                style={{ marginLeft: 'auto' }}
+                activeOpacity={0.8}
+                onPress={() => setShowNotifications(!showNotifications)}>
+                <NotificationIcon />
+                {!!meta?.unread_count && (
+                  <View
+                    style={{
+                      width: normalize(12),
+                      height: normalize(12),
+                      borderRadius: normalize(6),
+                      backgroundColor: 'red',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'absolute',
+                      top: -normalize(5),
+                      right: 0,
+                    }}>
+                    <Text
+                      style={{ fontSize: normalize(8), color: COLORS.white }}>
+                      {meta?.unread_count || 0}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={removeItem}
                 style={{
-                  width: normalize(12),
-                  height: normalize(12),
-                  borderRadius: normalize(6),
-                  backgroundColor: 'red',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'absolute',
-                  top: -normalize(5),
-                  right: 0,
+                  marginRight: -normalize(10),
+                  marginLeft: normalize(13),
                 }}>
-                <Text style={{ fontSize: normalize(8), color: COLORS.white }}>
-                  {unreadCount}
-                </Text>
-              </View>
-            </TouchableOpacity>
+                <LogOutIcon />
+              </TouchableOpacity>
+            </>
           );
         }}
       />
       {showNotifications ? (
         <FlatList
-          data={mockData}
+          data={notificationList || []}
           renderItem={renderNotifications}
           contentContainerStyle={{
             paddingBottom: normalize(20),
           }}
         />
       ) : null}
-      {showNotifications ? (
-        ''
-      ) : (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={removeItem}
-          style={{ position: 'absolute', left: 10, bottom: 100 }}>
-          <Image
-            source={require('../assets/images/log-out.png')}
-            style={{ width: 30, height: 30 }}
-          />
-        </TouchableOpacity>
-      )}
+
       {showNotifications ? (
         ''
       ) : (

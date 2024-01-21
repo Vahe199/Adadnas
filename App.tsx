@@ -5,14 +5,17 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
-import {Platform, StatusBar} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import { Platform, StatusBar } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import SplashScreen from 'react-native-splash-screen';
 import Route from './src/navigation/route';
 import COLORS from './src/constants/colors';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
+  const queryClient = new QueryClient();
+
   useEffect(() => {
     if (Platform.OS === 'android') {
       SplashScreen.hide();
@@ -25,9 +28,11 @@ function App() {
         barStyle="dark-content"
         backgroundColor={COLORS.primary}
       />
-      <NavigationContainer>
-        <Route />
-      </NavigationContainer>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <Route />
+        </NavigationContainer>
+      </QueryClientProvider>
     </>
   );
 }

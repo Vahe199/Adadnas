@@ -42,7 +42,7 @@ const LogInScreen = ({ navigation }) => {
   const handleCheckPass = val => {
     if (!val) {
       setErrors({ ...errors, password: 'Password is required.' });
-    } else if (password.length < 6) {
+    } else if (password.length < 5) {
       setErrors({
         ...errors,
         password: 'Password must be at least 6 characters.',
@@ -54,13 +54,13 @@ const LogInScreen = ({ navigation }) => {
 
   const logIn = async () => {
     if (errors?.email || errors?.password) return;
-    if (!password) {
-      setErrors({ ...errors, password: 'Password is required.' });
+    if (!email) {
+      setErrors({ ...errors, email: 'Email is required.' });
       return;
     }
 
-    if (!email) {
-      setErrors({ ...errors, email: 'Email is required.' });
+    if (!password) {
+      setErrors({ ...errors, password: 'Password is required.' });
       return;
     }
 
