@@ -6,12 +6,37 @@ import EyeIcon from '../components/SVGComponent/EyeIcon';
 import Button from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import { useAuth } from 'hooks/useAuth.hook';
 
 const LogInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
+  const { mutate } = useAuth(
+    async ({ data }) => {
+      if (data?.message) {
+        setErrors({ email: data.message, password: data.message });
+      } else if (data?.status === 'success') {
+        try {
+          const jsonValue = JSON.stringify(data);
+          await AsyncStorage.setItem('my-key', jsonValue);
+          navigation.navigate('Notification', {
+            user_id: data?.user_id,
+            token: data?.token,
+          });
+        } catch (e) {
+          // saving error const
+        }
+      }
+    },
+    () => {
+      setErrors({
+        ...errors,
+        password: 'something went wrong !',
+      });
+    },
+  );
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('my-key');
@@ -64,13 +89,7 @@ const LogInScreen = ({ navigation }) => {
       return;
     }
 
-    try {
-      const jsonValue = JSON.stringify({ password, email });
-      await AsyncStorage.setItem('my-key', jsonValue);
-      navigation.navigate('Notification');
-    } catch (e) {
-      // saving error const
-    }
+    mutate({ password, email });
   };
 
   return (

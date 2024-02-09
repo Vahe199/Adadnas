@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Linking,
@@ -18,54 +19,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogOutIcon } from 'components/SVGComponent/Auth/LogOutIcon';
 import { useGetNotification } from 'hooks/useGetNotification.hook';
 
-const mockData = [
-  {
-    unread: true,
-    title: 'Արևային ակնոցներ և հագուստ',
-    description: 'Կանացի թրենդային արևային ակնոցներ և հագուստ',
-    img: require('../assets/images/glases.jpg'),
-    url: 'https://adanas.codewave.am/kanaci-trendayin-arevayin-aknocner-ev-hagust/',
-  },
-  {
-    unread: true,
-    title: 'Բացահայտեք նորաձևության',
-    description: 'Ipsum բովանդակող Letraset էջերի թողարկման արդյունքում,',
-    img: require('../assets/images/post-1.webp'),
-    url: 'https://adanas.codewave.am/news/',
-  },
-  {
-    unread: false,
-    title: 'Դահուկային գործիքներ',
-    description: 'Դահուկային գործիքների ամբողջական հավաքածու բոլորի համար',
-    img: require('../assets/images/5-3.webp'),
-    url: 'https://adanas.codewave.am/news/',
-  },
-  {
-    unread: false,
-    title: 'Նորաձևության միտումները',
-    description: 'Ipsum բովանդակող Letraset էջերի թողարկման արդյունքում,',
-    img: require('../assets/images/post-2.jpg'),
-    url: 'https://adanas.codewave.am/news/',
-  },
-  {
-    unread: false,
-    title: 'Կանանց նորաձևության',
-    description: 'Բացահայտեք կանանց նորաձևության միտումները աշնանը',
-    img: require('../assets/images/cover_lookbookV4_copy.jpg'),
-    url: 'https://adanas.codewave.am/news/',
-  },
-  {
-    unread: false,
-    title: 'IPad և աքսեսուարներ',
-    description: 'Բացահայտեք նորաձևության IPad և աքսեսուարներ',
-    img: require('../assets/images/post-4.webp'),
-    url: 'https://adanas.codewave.am/news/',
-  },
-];
-
-const unreadCount = 2;
-const NotificationScreen = ({ navigation }) => {
+const NotificationScreen = ({ route: { params }, navigation }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [unread, setUnread] = useState(null);
+
   const handlePress = url => {
     // Specify the URL you want to open
 
@@ -73,7 +30,12 @@ const NotificationScreen = ({ navigation }) => {
     Linking.openURL(url);
   };
 
-  const { notificationList, isLoading, meta } = useGetNotification();
+  const { notificationList, meta, isLoading } = useGetNotification({
+    ...params,
+    ...unread,
+    page: 1,
+  });
+  console.log(notificationList, 556656565);
   const removeItem = async () => {
     try {
       await AsyncStorage.removeItem('my-key');
@@ -90,7 +52,7 @@ const NotificationScreen = ({ navigation }) => {
         duration={index > 5 ? 5 * 200 : index === 0 ? 600 : index * 400}
         useNativeDriver>
         <TouchableOpacity
-          onPress={() => handlePress(item?.url)}
+          onPress={() => handlePress(item?.url + `&not_id=${item?.id}`)}
           style={{
             flexDirection: 'row',
             alignItems: 'flex-start',
@@ -108,6 +70,7 @@ const NotificationScreen = ({ navigation }) => {
               marginRight: 10,
             }}
           />
+
           <View style={{ flex: 1 }}>
             <Text
               style={{
@@ -128,7 +91,7 @@ const NotificationScreen = ({ navigation }) => {
               {item?.title || ''}
             </Text>
           </View>
-          {item?.unread && (
+          {item?.status_mobile === '0' && (
             <View
               style={{
                 width: normalize(8),
@@ -139,7 +102,7 @@ const NotificationScreen = ({ navigation }) => {
             />
           )}
         </TouchableOpacity>
-        {notificationList?.[index + 1] ? <Underline /> : null}
+        {notificationList?.length - 1 === index ? null : <Underline />}
       </Animatable.View>
     );
   }, []);
@@ -156,7 +119,10 @@ const NotificationScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={{ marginLeft: 'auto' }}
                 activeOpacity={0.8}
-                onPress={() => setShowNotifications(!showNotifications)}>
+                onPress={() => {
+                  setShowNotifications(!showNotifications);
+                  setUnread(showNotifications ? null : { unread: 1 });
+                }}>
                 <NotificationIcon />
                 {!!meta?.unread_count && (
                   <View
@@ -191,15 +157,27 @@ const NotificationScreen = ({ navigation }) => {
           );
         }}
       />
-      {showNotifications ? (
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={COLORS.secondaryLight}
+          style={{ marginTop: '80%' }}
+        />
+      ) : showNotifications ? (
+        <FlatList
+          data={notificationList || []}
+          renderItem={renderNotifications}
+          contentContainerStyle={[mainStyles.content]}
+        />
+      ) : (
         <FlatList
           data={notificationList || []}
           renderItem={renderNotifications}
           contentContainerStyle={{
-            paddingBottom: normalize(20),
+            paddingBottom: normalize(40),
           }}
         />
-      ) : null}
+      )}
 
       {showNotifications ? (
         ''

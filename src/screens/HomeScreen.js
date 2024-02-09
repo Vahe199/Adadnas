@@ -1,5 +1,5 @@
 import React from 'react';
-import { mainStyles } from '../global-styles/global-styles';
+import { mainStyles } from 'global-styles/global-styles';
 import LinearGradient from 'react-native-linear-gradient';
 import COLORS from '../constants/colors';
 import { Image, Text, View } from 'react-native';
@@ -11,8 +11,13 @@ const HomeScreen = ({ navigation }) => {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('my-key');
+
       if (jsonValue) {
-        navigation.replace('Notification');
+        const data = JSON.parse(jsonValue);
+        navigation.replace('Notification', {
+          user_id: data?.user_id,
+          token: data?.token,
+        });
       }
     } catch (e) {
       // error reading value

@@ -10,7 +10,7 @@ export const headers = {
 
 const $axios = axios.create({
   // withCredentials: true,
-  baseURL: 'https://adanas.codewave.am/api/',
+  baseURL: 'https://adanas.am/api/',
   headers: headers,
 });
 
