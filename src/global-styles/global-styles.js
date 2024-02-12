@@ -26,7 +26,8 @@ export const mainStyles = StyleSheet.create({
     fontWeight: 800,
   },
   content: {
-    paddingBottom: normalize(1),
+    paddingBottom: normalize(10),
+    maxHeight: normalize(500),
     backgroundColor: COLORS.white,
     shadowColor: '#000',
     shadowOffset: {
@@ -35,7 +36,6 @@ export const mainStyles = StyleSheet.create({
     },
     shadowOpacity: 0.46,
     shadowRadius: 11.14,
-
     elevation: 17,
     borderBottomStartRadius: 16,
     borderBottomEndRadius: 16,
@@ -55,5 +55,33 @@ export const mainStyles = StyleSheet.create({
     height: '2px',
     backgroundColor: '#262626',
     marginVertical: 5,
+  },
+  inputWrapper: {
+    width: '100%',
+    height: 48,
+    borderColor: COLORS.black,
+    borderWidth: 1,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 22,
+    position: 'relative',
+  },
+  textInput: {
+    width: '100%',
+    color: COLORS.black,
+    fontSize: 18,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: 400,
+    marginVertical: 8,
+  },
+  errorMsg: {
+    color: COLORS.red,
+    fontSize: 12,
+    position: 'absolute',
+    left: 0,
+    top: 50,
   },
 });

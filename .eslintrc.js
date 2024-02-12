@@ -3,7 +3,7 @@ module.exports = {
   plugins: ['react', 'react-hooks'],
   extends: ['@react-native-community'],
   settings: {
-    react: {version: '16'},
+    react: { version: '16' },
     'import/core-modules': [
       '@react-navigation/core',
       '@react-navigation/native',
@@ -16,7 +16,8 @@ module.exports = {
       '@react-navigation/material-bottom-tabs',
     ],
   },
-  env: {browser: true, node: true},
+
+  env: { browser: true, node: true },
   rules: {
     'react-hooks/rules-of-hooks': 'error',
     'no-unused-vars': 'off',
@@ -32,7 +33,7 @@ module.exports = {
     curly: ['error', 'multi-line', 'consistent'],
     'padding-line-between-statements': [
       'error',
-      {blankLine: 'always', prev: 'block-like', next: '*'},
+      { blankLine: 'always', prev: 'block-like', next: '*' },
     ],
   },
 };

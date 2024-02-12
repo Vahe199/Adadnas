@@ -3,17 +3,18 @@ import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import EyeIcon from '../components/SVGComponent/EyeIcon';
-import Button from '../components/Button';
+import Button from '../components/elements/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from 'hooks/useAuth.hook';
+import { mainStyles } from 'global-styles/global-styles';
 
 const LogInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
-  const { mutate } = useAuth(
+  const { mutate, isPending } = useAuth(
     async ({ data }) => {
       if (data?.message) {
         setErrors({ email: data.message, password: data.message });
@@ -54,26 +55,36 @@ const LogInScreen = ({ navigation }) => {
       return () => null;
     }, []),
   );
-  const handleCheckEmail = val => {
-    if (!val) {
-      setErrors({ ...errors, email: 'Email is required.' });
-    } else if (!/\S+@\S+\.\S+/.test(val)) {
-      setErrors({ ...errors, email: 'Email is invalid.' });
+  const handleCheckTyping = (val, type) => {
+    if (type === 'email') {
+      if (!val) {
+        setErrors({ email: 'Email is required.' });
+      } else if (!/\S+@\S+\.\S+/.test(val)) {
+        setErrors({ ...errors, email: 'Email is invalid.' });
+      } else {
+        setErrors({
+          password: errors?.password?.includes('incorrect')
+            ? ''
+            : errors?.password,
+          email: '',
+        });
+      }
+    } else if (type === 'password') {
+      if (!val) {
+        setErrors({ password: 'Password is required.' });
+      } else if (val.length < 5) {
+        setErrors({
+          ...errors,
+          password: 'Password must be at least 6 characters.',
+        });
+      } else {
+        setErrors({
+          email: errors?.email?.includes('incorrect') ? '' : errors?.email,
+          password: '',
+        });
+      }
     } else {
-      setErrors({ ...errors, email: '' });
-    }
-  };
-
-  const handleCheckPass = val => {
-    if (!val) {
-      setErrors({ ...errors, password: 'Password is required.' });
-    } else if (password.length < 5) {
-      setErrors({
-        ...errors,
-        password: 'Password must be at least 6 characters.',
-      });
-    } else {
-      setErrors({ ...errors, password: '' });
+      setErrors({});
     }
   };
 
@@ -111,68 +122,34 @@ const LogInScreen = ({ navigation }) => {
           </Text>
         </View>
         <View style={{ marginBottom: 12 }}>
-          <Text style={{ fontSize: 16, fontWeight: 400, marginVertical: 8 }}>
-            Email address
-          </Text>
-          <View
-            style={{
-              width: '100%',
-              height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22,
-              position: 'relative',
-            }}>
+          <Text style={[mainStyles.inputLabel]}>Email address</Text>
+          <View style={[mainStyles.inputWrapper]}>
             <TextInput
               placeholder={'Enter your email address'}
               placeholderTextColor={COLORS.grey}
               keyboardType={'email-address'}
-              style={{ width: '100%' }}
+              style={[mainStyles.textInput]}
               value={email}
               onChangeText={text => {
                 setEmail(text);
-                handleCheckEmail(text);
+                handleCheckTyping(text, 'email');
               }}
             />
-            <Text
-              style={{
-                color: COLORS.red,
-                fontSize: 12,
-                position: 'absolute',
-                left: 0,
-                top: 50,
-              }}>
-              {errors?.email}
-            </Text>
+            <Text style={[mainStyles.errorMsg]}>{errors?.email}</Text>
           </View>
         </View>
         <View style={{ marginBottom: 12 }}>
-          <Text style={{ fontSize: 16, fontWeight: 400, marginVertical: 8 }}>
-            Password
-          </Text>
-          <View
-            style={{
-              width: '100%',
-              height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22,
-            }}>
+          <Text style={[mainStyles.inputLabel]}>Password</Text>
+          <View style={[mainStyles.inputWrapper]}>
             <TextInput
               placeholder={'Enter your password'}
               placeholderTextColor={COLORS.grey}
-              style={{ width: '100%' }}
+              style={[mainStyles.textInput]}
               secureTextEntry={!showPass}
               value={password}
               onChangeText={text => {
                 setPassword(text);
-                handleCheckPass(text);
+                handleCheckTyping(text, 'password');
               }}
             />
             <TouchableOpacity
@@ -185,19 +162,11 @@ const LogInScreen = ({ navigation }) => {
               }}>
               <EyeIcon show={showPass} />
             </TouchableOpacity>
-            <Text
-              style={{
-                color: COLORS.red,
-                fontSize: 12,
-                position: 'absolute',
-                left: 0,
-                top: 50,
-              }}>
-              {errors?.password}
-            </Text>
+            <Text style={[mainStyles.errorMsg]}>{errors?.password}</Text>
           </View>
         </View>
         <Button
+          disabled={isPending}
           title={'Sign In'}
           onPress={logIn}
           filled

@@ -9,6 +9,8 @@ const Underline = ({ height, color, style }) => {
       style={{
         height: height ? normalize(height) : normalize(1),
         backgroundColor: color || COLORS.grey,
+        width: '80%',
+        marginLeft: 'auto',
         ...style,
       }}
     />

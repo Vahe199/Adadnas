@@ -3,39 +3,31 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  Linking,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import Underline from 'components/Underline';
 import Header from 'components/Header';
 import { NotificationIcon } from 'components/SVGComponent/NotificationIcon';
 import { normalize } from 'global-styles/normalize';
-import * as Animatable from 'react-native-animatable';
 import COLORS from 'constants/colors';
 import { mainStyles } from 'global-styles/global-styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LogOutIcon } from 'components/SVGComponent/Auth/LogOutIcon';
 import { useGetNotification } from 'hooks/useGetNotification.hook';
+import NewsCard from '../components/elements/NewCard';
+import BorderCard from '../components/elements/BorderCard';
 
 const NotificationScreen = ({ route: { params }, navigation }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unread, setUnread] = useState(null);
+  const [page, setPage] = useState(1);
 
-  const handlePress = url => {
-    // Specify the URL you want to open
-
-    // Open the URL in the default browser
-    Linking.openURL(url);
-  };
-
-  const { notificationList, meta, isLoading } = useGetNotification({
+  const { notificationList, meta, isLoading, refresh } = useGetNotification({
     ...params,
     ...unread,
-    page: 1,
+    page,
   });
-  console.log(notificationList, 556656565);
   const removeItem = async () => {
     try {
       await AsyncStorage.removeItem('my-key');
@@ -46,66 +38,19 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
   };
 
   const renderNotifications = useCallback(({ item, index }) => {
-    return (
-      <Animatable.View
-        animation="fadeInDown"
-        duration={index > 5 ? 5 * 200 : index === 0 ? 600 : index * 400}
-        useNativeDriver>
-        <TouchableOpacity
-          onPress={() => handlePress(item?.url + `&not_id=${item?.id}`)}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            padding: normalize(16),
-          }}>
-          <Image
-            source={{
-              uri: item?.img,
-            }}
-            style={{
-              height: 40,
-              width: 40,
-              borderRadius: 8,
-              marginTop: 15,
-              marginRight: 10,
-            }}
-          />
-
-          <View style={{ flex: 1 }}>
-            <Text
-              style={{
-                fontWeight: '600',
-                fontSize: 14,
-                lineHeight: 20,
-              }}>
-              {item?.message || ''}
-            </Text>
-            <Text
-              style={{
-                fontWeight: '400',
-                fontSize: 12,
-                lineHeight: 20,
-                marginTop: 5,
-                color: COLORS.grey,
-              }}>
-              {item?.title || ''}
-            </Text>
-          </View>
-          {item?.status_mobile === '0' && (
-            <View
-              style={{
-                width: normalize(8),
-                height: normalize(8),
-                borderRadius: normalize(4),
-                backgroundColor: 'green',
-              }}
-            />
-          )}
-        </TouchableOpacity>
-        {notificationList?.length - 1 === index ? null : <Underline />}
-      </Animatable.View>
-    );
+    return <NewsCard index={index} news={item} />;
   }, []);
+  const renderNotificationsNotify = useCallback(({ item, index }) => {
+    return <BorderCard item={item} index={index} />;
+  }, []);
+  const onLoadMore = p => {
+    console.log(page, 555);
+    // setPage(page + 1);
+  };
+
+  const gameItemExtractorKey = (item, index) => {
+    return index.toString();
+  };
 
   return (
     <View style={[mainStyles.flex]}>
@@ -164,17 +109,21 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
           style={{ marginTop: '80%' }}
         />
       ) : showNotifications ? (
-        <FlatList
-          data={notificationList || []}
-          renderItem={renderNotifications}
-          contentContainerStyle={[mainStyles.content]}
-        />
+        <View style={[mainStyles.content]}>
+          <FlatList
+            data={notificationList || []}
+            renderItem={renderNotificationsNotify}
+            keyExtractor={gameItemExtractorKey}
+            onEndReached={onLoadMore}
+            onEndReachedThreshold={0.3}
+          />
+        </View>
       ) : (
         <FlatList
           data={notificationList || []}
           renderItem={renderNotifications}
           contentContainerStyle={{
-            paddingBottom: normalize(40),
+            paddingBottom: normalize(60),
           }}
         />
       )}

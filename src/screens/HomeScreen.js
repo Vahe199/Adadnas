@@ -3,7 +3,7 @@ import { mainStyles } from 'global-styles/global-styles';
 import LinearGradient from 'react-native-linear-gradient';
 import COLORS from '../constants/colors';
 import { Image, Text, View } from 'react-native';
-import Button from '../components/Button';
+import Button from '../components/elements/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
