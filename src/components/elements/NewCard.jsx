@@ -51,9 +51,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const NewsCard = ({ news, index }) => {
+const NewsCard = ({ news, index, token, useNavigation }) => {
   const handlePress = url => {
     // Open the URL in the default browser
+    useNavigation();
     Linking.openURL(url);
   };
   return (
@@ -62,7 +63,9 @@ const NewsCard = ({ news, index }) => {
       duration={index > 5 ? 5 * 200 : index === 0 ? 600 : index * 400}
       useNativeDriver>
       <TouchableOpacity
-        onPress={() => handlePress(news?.url + `?not_id=${news?.id}`)}
+        onPress={() =>
+          handlePress(news?.url + `?not_id=${news?.id}&token=${token}`)
+        }
         style={[styles.container]}>
         <Image
           defaultSource={require('../../assets/images/newspaper.png')}

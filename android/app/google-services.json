@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "677437894525",
+    "project_id": "adanas-ac217",
+    "storage_bucket": "adanas-ac217.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677437894525:android:95af0019aa5d2079ce2614",
+        "android_client_info": {
+          "package_name": "com.adanas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh2f9RTdUJZhEiP9cvUXVkOxNLsnwl6Q8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

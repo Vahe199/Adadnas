@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -17,20 +17,29 @@ import { LogOutIcon } from 'components/SVGComponent/Auth/LogOutIcon';
 import { useGetNotification } from 'hooks/useGetNotification.hook';
 import NewsCard from '../components/elements/NewCard';
 import BorderCard from '../components/elements/BorderCard';
+import { useGetUnReadeNotification } from 'hooks/useGetUnReadNotification.hook';
 
 const NotificationScreen = ({ route: { params }, navigation }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unread, setUnread] = useState(null);
   const [page, setPage] = useState(1);
-
-  const { notificationList, meta, isLoading, refresh } = useGetNotification({
+  const { unReadeNotification, meta, refetch } = useGetUnReadeNotification({
+    ...params,
+    unread: 1,
+  });
+  const { notificationList, isLoading } = useGetNotification({
     ...params,
     ...unread,
     page,
   });
+
+  useEffect(() => {
+    refetch();
+  }, [showNotifications]);
   const removeItem = async () => {
     try {
       await AsyncStorage.removeItem('my-key');
+      await AsyncStorage.removeItem('fcmtoken');
       navigation.replace('Home');
     } catch (e) {
       // error reading value
@@ -38,10 +47,28 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
   };
 
   const renderNotifications = useCallback(({ item, index }) => {
-    return <NewsCard index={index} news={item} />;
+    return (
+      <NewsCard
+        index={index}
+        news={item}
+        token={params?.token || ''}
+        useNavigation={() => {
+          navigation.replace('Home');
+        }}
+      />
+    );
   }, []);
   const renderNotificationsNotify = useCallback(({ item, index }) => {
-    return <BorderCard item={item} index={index} />;
+    return (
+      <BorderCard
+        item={item}
+        index={index}
+        token={params?.token || ''}
+        useNavigation={() => {
+          navigation.replace('Home');
+        }}
+      />
+    );
   }, []);
   const onLoadMore = p => {
     console.log(page, 555);
@@ -111,7 +138,7 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
       ) : showNotifications ? (
         <View style={[mainStyles.content]}>
           <FlatList
-            data={notificationList || []}
+            data={unReadeNotification || []}
             renderItem={renderNotificationsNotify}
             keyExtractor={gameItemExtractorKey}
             onEndReached={onLoadMore}

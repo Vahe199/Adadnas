@@ -13,9 +13,10 @@ import { normalize } from 'global-styles/normalize';
 import Underline from 'components/Underline';
 import Point from '../../components/elements/Point';
 
-const BorderCard = ({ index, item }) => {
+const BorderCard = ({ index, item, token, useNavigation }) => {
   const handlePress = url => {
     // Open the URL in the default browser
+    useNavigation();
     Linking.openURL(url);
   };
   return (
@@ -25,7 +26,9 @@ const BorderCard = ({ index, item }) => {
       useNativeDriver>
       {!!index && <Underline />}
       <TouchableOpacity
-        onPress={() => handlePress(item?.url + `&not_id=${item?.id}`)}
+        onPress={() =>
+          handlePress(item?.url + `&not_id=${item?.id}&token=${token}`)
+        }
         style={[styles.container]}>
         <Image
           source={{

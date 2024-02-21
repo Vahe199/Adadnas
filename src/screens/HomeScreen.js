@@ -18,6 +18,8 @@ const HomeScreen = ({ navigation }) => {
           user_id: data?.user_id,
           token: data?.token,
         });
+      } else {
+        await AsyncStorage.removeItem('fcmtoken');
       }
     } catch (e) {
       // error reading value

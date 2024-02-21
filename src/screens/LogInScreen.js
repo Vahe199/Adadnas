@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import EyeIcon from '../components/SVGComponent/EyeIcon';
@@ -8,6 +15,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from 'hooks/useAuth.hook';
 import { mainStyles } from 'global-styles/global-styles';
+import {
+  NotificationListener,
+  requestUserPermission,
+} from 'helpers/pushnotification_helpers';
 
 const LogInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -52,9 +63,13 @@ const LogInScreen = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       getData();
+      NotificationListener();
+      requestUserPermission();
+
       return () => null;
     }, []),
   );
+
   const handleCheckTyping = (val, type) => {
     if (type === 'email') {
       if (!val) {
@@ -89,6 +104,8 @@ const LogInScreen = ({ navigation }) => {
   };
 
   const logIn = async () => {
+    const device_id = await AsyncStorage.getItem('fcmtoken');
+    const device_type = Platform.OS;
     if (errors?.email || errors?.password) return;
     if (!email) {
       setErrors({ ...errors, email: 'Email is required.' });
@@ -100,7 +117,7 @@ const LogInScreen = ({ navigation }) => {
       return;
     }
 
-    mutate({ password, email });
+    mutate({ password, email, device_id, device_type });
   };
 
   return (
