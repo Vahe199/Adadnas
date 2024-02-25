@@ -12,6 +12,7 @@ import SplashScreen from 'react-native-splash-screen';
 import Route from './src/navigation/route';
 import COLORS from './src/constants/colors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { navigationRef } from './src/services/navigatio';
 
 function App() {
   const queryClient = new QueryClient();
@@ -29,7 +30,7 @@ function App() {
         backgroundColor={COLORS.primary}
       />
       <QueryClientProvider client={queryClient}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <Route />
         </NavigationContainer>
       </QueryClientProvider>

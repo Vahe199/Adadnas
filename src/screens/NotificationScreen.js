@@ -18,24 +18,42 @@ import { useGetNotification } from 'hooks/useGetNotification.hook';
 import NewsCard from '../components/elements/NewCard';
 import BorderCard from '../components/elements/BorderCard';
 import { useGetUnReadeNotification } from 'hooks/useGetUnReadNotification.hook';
+import { useFocusEffect } from '@react-navigation/native';
+import { isArray } from 'lodash';
+import { replace } from 'services/navigatio';
 
 const NotificationScreen = ({ route: { params }, navigation }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [unread, setUnread] = useState(null);
+  const [notification, setNotification] = useState([]);
   const [page, setPage] = useState(1);
-  const { unReadeNotification, meta, refetch } = useGetUnReadeNotification({
+  const { unReadeNotification, refetch } = useGetUnReadeNotification({
     ...params,
     unread: 1,
   });
-  const { notificationList, isLoading } = useGetNotification({
+  const { notificationList, isLoading, meta } = useGetNotification({
     ...params,
     ...unread,
     page,
   });
-
   useEffect(() => {
-    refetch();
-  }, [showNotifications]);
+    if (notificationList?.length) {
+      setNotification(pre => [...pre, ...notificationList]);
+    }
+  }, [notificationList]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+      if (!isArray(notificationList) && !isLoading) {
+        AsyncStorage.clear();
+        replace('Home');
+      }
+
+      return () => null;
+    }, []),
+  );
+
   const removeItem = async () => {
     try {
       await AsyncStorage.removeItem('my-key');
@@ -47,32 +65,15 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
   };
 
   const renderNotifications = useCallback(({ item, index }) => {
-    return (
-      <NewsCard
-        index={index}
-        news={item}
-        token={params?.token || ''}
-        useNavigation={() => {
-          navigation.replace('Home');
-        }}
-      />
-    );
+    return <NewsCard index={index} news={item} token={params?.token || ''} />;
   }, []);
   const renderNotificationsNotify = useCallback(({ item, index }) => {
-    return (
-      <BorderCard
-        item={item}
-        index={index}
-        token={params?.token || ''}
-        useNavigation={() => {
-          navigation.replace('Home');
-        }}
-      />
-    );
+    return <BorderCard item={item} index={index} token={params?.token || ''} />;
   }, []);
   const onLoadMore = p => {
-    console.log(page, 555);
-    // setPage(page + 1);
+    if (meta?.lastPage > page) {
+      setPage(page + 1);
+    }
   };
 
   const gameItemExtractorKey = (item, index) => {
@@ -140,15 +141,15 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
           <FlatList
             data={unReadeNotification || []}
             renderItem={renderNotificationsNotify}
-            keyExtractor={gameItemExtractorKey}
-            onEndReached={onLoadMore}
-            onEndReachedThreshold={0.3}
           />
         </View>
       ) : (
         <FlatList
-          data={notificationList || []}
+          data={notification || []}
           renderItem={renderNotifications}
+          keyExtractor={gameItemExtractorKey}
+          onEndReached={onLoadMore}
+          onEndReachedThreshold={0.3}
           contentContainerStyle={{
             paddingBottom: normalize(60),
           }}

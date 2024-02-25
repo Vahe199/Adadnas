@@ -1,23 +1,16 @@
 import React from 'react';
-import {
-  Image,
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import COLORS from 'constants/colors';
 import { normalize } from 'global-styles/normalize';
 import Underline from 'components/Underline';
 import Point from '../../components/elements/Point';
+import { push } from 'services/navigatio';
 
-const BorderCard = ({ index, item, token, useNavigation }) => {
+const BorderCard = ({ index, item, token }) => {
   const handlePress = url => {
-    // Open the URL in the default browser
-    useNavigation();
-    Linking.openURL(url);
+    // Open the URL in the WebView
+    push('Webview', { url: url });
   };
   return (
     <Animatable.View

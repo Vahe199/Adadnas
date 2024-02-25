@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  Image,
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import COLORS from 'constants/colors';
 import Point from '../../components/elements/Point';
 import { normalize } from 'global-styles/normalize';
+import { push } from 'services/navigatio';
 
 const styles = StyleSheet.create({
   container: {
@@ -51,11 +45,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const NewsCard = ({ news, index, token, useNavigation }) => {
+const NewsCard = ({ news, index, token }) => {
   const handlePress = url => {
-    // Open the URL in the default browser
-    useNavigation();
-    Linking.openURL(url);
+    // Open the URL in the WebView
+    push('Webview', { url: url });
   };
   return (
     <Animatable.View
