@@ -109,6 +109,7 @@ dependencies {
 
 //     add react-native-splash-screen
      implementation project(':react-native-splash-screen')
+    implementation 'com.google.firebase:firebase-auth:22.3.1'
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
@@ -122,4 +123,5 @@ dependencies {
     }
 }
 
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
+apply plugin: 'com.google.gms.google-services'; applyNativeModulesAppBuildGradle(project)

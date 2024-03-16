@@ -1,19 +1,49 @@
 import React from 'react';
-import {mainStyles} from '../global-styles/global-styles';
+import { mainStyles } from 'global-styles/global-styles';
 import LinearGradient from 'react-native-linear-gradient';
 import COLORS from '../constants/colors';
-import {Image, Text, View} from 'react-native';
-import Button from '../components/Button';
+import { Image, Text, View } from 'react-native';
+import Button from '../components/elements/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('my-key');
+
+      if (jsonValue) {
+        const data = JSON.parse(jsonValue);
+        navigation.replace('Notification', {
+          user_id: data?.user_id,
+          token: data?.token,
+        });
+      } else {
+        await AsyncStorage.removeItem('fcmtoken');
+      }
+    } catch (e) {
+      // error reading value
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getData();
+      return () => null;
+    }, []),
+  );
+  const handleStarted = () => {
+    navigation.navigate('LogIn');
+  };
+
   return (
     <LinearGradient
       style={mainStyles.flex}
-      colors={[COLORS.secondary, COLORS.primary]}>
+      colors={[COLORS.white, COLORS.primary]}>
       <View style={[mainStyles.flex]}>
         <Image
           source={require('../assets/cropped-Adanas-logo.png')}
-          style={{marginTop: 40}}
+          style={{ marginTop: 40 }}
         />
         <View>
           <Image
@@ -25,9 +55,9 @@ const HomeScreen = ({navigation}) => {
               position: 'absolute',
               top: 10,
               transform: [
-                {translateX: 20},
-                {translateY: 50},
-                {rotate: '-15deg'},
+                { translateX: 20 },
+                { translateY: 50 },
+                { rotate: '-15deg' },
               ],
             }}
           />
@@ -41,9 +71,9 @@ const HomeScreen = ({navigation}) => {
               top: -30,
               left: 100,
               transform: [
-                {translateX: 50},
-                {translateY: 50},
-                {rotate: '-5deg'},
+                { translateX: 50 },
+                { translateY: 50 },
+                { rotate: '-5deg' },
               ],
             }}
           />
@@ -57,9 +87,9 @@ const HomeScreen = ({navigation}) => {
               top: 130,
               left: -50,
               transform: [
-                {translateX: 50},
-                {translateY: 50},
-                {rotate: '15deg'},
+                { translateX: 50 },
+                { translateY: 50 },
+                { rotate: '15deg' },
               ],
             }}
           />
@@ -73,9 +103,9 @@ const HomeScreen = ({navigation}) => {
               top: 110,
               left: 100,
               transform: [
-                {translateX: 50},
-                {translateY: 50},
-                {rotate: '-15deg'},
+                { translateX: 50 },
+                { translateY: 50 },
+                { rotate: '-15deg' },
               ],
             }}
           />
@@ -85,34 +115,32 @@ const HomeScreen = ({navigation}) => {
           style={{
             paddingHorizontal: 22,
             position: 'absolute',
-            top: 400,
+            top: 360,
             width: '100%',
           }}>
           <Text style={[mainStyles.mainTitle]}>Let's Get</Text>
           <Text style={[mainStyles.mainStarted]}>Started</Text>
-          <View style={{marginVertical: 22}}>
+          <View style={{ marginVertical: 22 }}>
             <Text
               style={{
                 fontSize: 16,
                 color: COLORS.white,
                 marginVertical: 4,
               }}>
-              Connect whit each with chatting
+              Be part of our community!
             </Text>
             <Text
               style={{
                 fontSize: 16,
                 color: COLORS.white,
               }}>
-              Calling, Enjoy Safe and Private texting
+              Join now to unlock exclusive offers and stay informed about our
+              latest products and updates.
             </Text>
           </View>
           <Button
             title={'Join Now'}
-            onPress={() => {
-              console.log(666);
-              navigation.navigate('LogIn');
-            }}
+            onPress={handleStarted}
             style={{
               marginTop: 22,
               width: '100%',
