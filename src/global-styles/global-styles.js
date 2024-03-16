@@ -43,12 +43,13 @@ export const mainStyles = StyleSheet.create({
     borderTopEndRadius: 8,
   },
   footer: {
-    padding: 5,
+    paddingHorizontal: 5,
+    paddingVertical: 15,
     position: 'absolute',
     bottom: 0,
     alignItems: 'center',
     width: '100%',
-    backgroundColor: '#f4f5f1',
+    backgroundColor: '#5CA699',
   },
   line: {
     width: '100px',

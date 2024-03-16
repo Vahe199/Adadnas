@@ -3,6 +3,8 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Pressable,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -31,20 +33,33 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
     ...params,
     unread: 1,
   });
-  const { notificationList, isLoading, meta } = useGetNotification({
+  const {
+    notificationList,
+    isLoading,
+    meta,
+    refetch: notRefetch,
+  } = useGetNotification({
     ...params,
     ...unread,
     page,
   });
+
   useEffect(() => {
     if (notificationList?.length) {
       setNotification(pre => [...pre, ...notificationList]);
     }
   }, [notificationList]);
+  useEffect(() => {
+    if (showNotifications) {
+      setNotification([]);
+      setPage(1);
+    }
+  }, [showNotifications]);
 
   useFocusEffect(
     React.useCallback(() => {
       refetch();
+      notRefetch();
       if (!isArray(notificationList) && !isLoading) {
         AsyncStorage.clear();
         replace('Home');
@@ -76,15 +91,43 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
     }
   };
 
-  const gameItemExtractorKey = (item, index) => {
-    return index.toString();
+  const handleCloseNot = () => {
+    if (showNotifications) {
+      setShowNotifications(false);
+      setUnread(null);
+    }
+  };
+
+  const onRefresh = () => {
+    setNotification([]);
+    setPage(1);
+    notRefetch();
+  };
+
+  const renderFooter = () => {
+    return (
+      //Footer View with Loader
+      <View>
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color={COLORS.secondaryLight}
+            style={{ marginTop: '80%' }}
+          />
+        ) : null}
+      </View>
+    );
   };
 
   return (
     <View style={[mainStyles.flex]}>
       <Header
         containerStyle={{ justifyContent: 'space-between' }}
-        logo={<Image source={require('../assets/cropped-Adanas-logo.png')} />}
+        logo={
+          <Pressable onPress={handleCloseNot}>
+            <Image source={require('../assets/cropped-Adanas-logo.png')} />
+          </Pressable>
+        }
         rightIcon
         renderRightIcon={() => {
           return (
@@ -130,41 +173,41 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
           );
         }}
       />
-      {isLoading ? (
-        <ActivityIndicator
-          size="large"
-          color={COLORS.secondaryLight}
-          style={{ marginTop: '80%' }}
-        />
-      ) : showNotifications ? (
-        <View style={[mainStyles.content]}>
+      <Pressable style={{ flex: 1 }} onPress={handleCloseNot}>
+        {showNotifications ? (
+          <View style={[mainStyles.content]}>
+            <FlatList
+              data={unReadeNotification || []}
+              renderItem={renderNotificationsNotify}
+            />
+          </View>
+        ) : (
           <FlatList
-            data={unReadeNotification || []}
-            renderItem={renderNotificationsNotify}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+            }
+            data={notification || []}
+            renderItem={renderNotifications}
+            keyExtractor={(_, index) => index.toString()}
+            onEndReached={onLoadMore}
+            onEndReachedThreshold={0.5}
+            contentContainerStyle={{
+              paddingBottom: normalize(60),
+            }}
+            ListFooterComponent={renderFooter}
           />
-        </View>
-      ) : (
-        <FlatList
-          data={notification || []}
-          renderItem={renderNotifications}
-          keyExtractor={gameItemExtractorKey}
-          onEndReached={onLoadMore}
-          onEndReachedThreshold={0.3}
-          contentContainerStyle={{
-            paddingBottom: normalize(60),
-          }}
-        />
-      )}
+        )}
 
-      {showNotifications ? (
-        ''
-      ) : (
-        <View style={[mainStyles.footer]}>
-          <Text style={{ textAlign: 'center' }}>
-            Copyright © 2023 Adanas | All Rights Reserved | Website by Dimark
-          </Text>
-        </View>
-      )}
+        {showNotifications ? (
+          ''
+        ) : (
+          <View style={[mainStyles.footer]}>
+            <Text style={{ textAlign: 'center', color: COLORS.white }}>
+              Copyright © 2023 Adanas | All Rights Reserved
+            </Text>
+          </View>
+        )}
+      </Pressable>
     </View>
   );
 };

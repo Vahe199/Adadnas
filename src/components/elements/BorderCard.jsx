@@ -12,6 +12,16 @@ const BorderCard = ({ index, item, token }) => {
     // Open the URL in the WebView
     push('Webview', { url: url });
   };
+  const message = !item.message.length
+    ? ''
+    : item.message.length > 70
+    ? item.message.slice(0, 70) + '...'
+    : item.message;
+  const title = !item.title.length
+    ? ''
+    : item.title.length > 25
+    ? item.title.slice(0, 25) + '...'
+    : item.title;
   return (
     <Animatable.View
       animation="fadeInDown"
@@ -31,8 +41,8 @@ const BorderCard = ({ index, item, token }) => {
         />
 
         <View style={{ flex: 1 }}>
-          <Text style={[styles.title]}>{item?.title || ''}</Text>
-          <Text style={[styles.desc]}>{item?.message || ''}</Text>
+          <Text style={[styles.title]}>{title || ''}</Text>
+          <Text style={[styles.desc]}>{message || ''}</Text>
         </View>
         {item?.status_mobile === '0' && <Point />}
       </TouchableOpacity>
@@ -51,7 +61,9 @@ const styles = StyleSheet.create({
     height: 70,
     width: 70,
     borderRadius: 35,
-    backgroundColor: COLORS.black,
+    borderWidth: 1,
+    borderColor: COLORS.grey,
+    // backgroundColor: COLORS.black,
     marginRight: 10,
     resizeMode: 'cover',
   },
@@ -64,10 +76,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   desc: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
     marginTop: 5,
     color: COLORS.grey,
+    overflow: 'hidden',
+    maxHeight: 60,
   },
 });
 

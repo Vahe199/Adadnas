@@ -36,12 +36,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
     lineHeight: 20,
+    color: COLORS.black,
   },
   desc: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
     marginTop: 5,
     color: COLORS.grey,
+    overflow: 'hidden',
+    maxHeight: 60,
   },
 });
 
@@ -50,6 +52,20 @@ const NewsCard = ({ news, index, token }) => {
     // Open the URL in the WebView
     push('Webview', { url: url });
   };
+  // const message1 =
+  //   news?.message?.length > 100 ? news?.message?.splice(0, 100) : '22';
+
+  const message = !news.message.length
+    ? ''
+    : news.message.length > 70
+    ? news.message.slice(0, 70) + '...'
+    : news.message;
+  const title = !news.title.length
+    ? ''
+    : news.title.length > 25
+    ? news.title.slice(0, 25) + '...'
+    : news.title;
+
   return (
     <Animatable.View
       animation="fadeInDown"
@@ -69,8 +85,8 @@ const NewsCard = ({ news, index, token }) => {
         />
 
         <View style={[styles.titleContainer]}>
-          <Text style={[styles.title]}>{news?.title || ''}</Text>
-          <Text style={[styles.desc]}>{news?.message || ''}</Text>
+          <Text style={[styles.title]}>{title || ''}</Text>
+          <Text style={[styles.desc]}>{message || ''}</Text>
         </View>
         {news?.status_mobile === '0' && <Point />}
       </TouchableOpacity>
