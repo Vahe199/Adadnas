@@ -43,6 +43,12 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
     ...unread,
     page,
   });
+  const onRefresh = () => {
+    setNotification([]);
+    setPage(1);
+    notRefetch();
+    refetch();
+  };
 
   useEffect(() => {
     if (notificationList?.length) {
@@ -58,8 +64,7 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      refetch();
-      notRefetch();
+      onRefresh();
       if (!isArray(notificationList) && !isLoading) {
         AsyncStorage.clear();
         replace('Home');
@@ -96,12 +101,6 @@ const NotificationScreen = ({ route: { params }, navigation }) => {
       setShowNotifications(false);
       setUnread(null);
     }
-  };
-
-  const onRefresh = () => {
-    setNotification([]);
-    setPage(1);
-    notRefetch();
   };
 
   const renderFooter = () => {
